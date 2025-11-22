@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Plus, MoreHorizontal, Phone, Mail } from 'lucide-react';
 import { DndContext, useDraggable, useDroppable } from '@dnd-kit/core';
 import type { DragEndEvent } from '@dnd-kit/core';
+import { motion } from 'framer-motion';
 
 interface Lead {
     id: string;
@@ -33,22 +34,27 @@ const DraggableCard = ({ lead, onClick }: { lead: Lead; onClick: () => void }) =
 
     const style = transform ? {
         transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
+        zIndex: 999,
     } : undefined;
 
     return (
         <div ref={setNodeRef} style={style} {...listeners} {...attributes}>
-            <div style={{
-                backgroundColor: 'white',
-                padding: 'var(--space-md)',
-                borderRadius: 'var(--radius-md)',
-                boxShadow: 'var(--shadow-sm)',
-                cursor: 'grab',
-                border: '1px solid transparent',
-                transition: 'box-shadow 0.2s ease'
-            }}
+            <motion.div
+                layoutId={lead.id}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                style={{
+                    backgroundColor: 'white',
+                    padding: 'var(--space-md)',
+                    borderRadius: 'var(--radius-md)',
+                    boxShadow: 'var(--shadow-sm)',
+                    cursor: 'grab',
+                    border: '1px solid transparent',
+                    transition: 'box-shadow 0.2s ease'
+                }}
                 onClick={onClick}
-                onMouseEnter={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-md)'}
-                onMouseLeave={(e) => e.currentTarget.style.boxShadow = 'var(--shadow-sm)'}
+                whileHover={{ y: -2, boxShadow: 'var(--shadow-md)' }}
+                whileTap={{ scale: 0.98 }}
             >
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 'var(--space-xs)' }}>
                     <span style={{ fontWeight: '600', color: 'var(--color-text-main)' }}>{lead.name}</span>
@@ -65,7 +71,7 @@ const DraggableCard = ({ lead, onClick }: { lead: Lead; onClick: () => void }) =
                         <Phone size={14} />
                     </button>
                 </div>
-            </div>
+            </motion.div>
         </div>
     );
 };
@@ -78,17 +84,28 @@ const DroppableColumn = ({ stage, children }: { stage: any; children: React.Reac
     return (
         <div ref={setNodeRef} style={{
             minWidth: '300px',
-            backgroundColor: '#f1f5f9', // Slate 100
+            backgroundColor: '#f8fafc', // Slate 50
             borderRadius: 'var(--radius-lg)',
             display: 'flex',
             flexDirection: 'column',
-            maxHeight: '100%'
+            maxHeight: '100%',
+            border: '1px solid var(--color-border)'
         }}>
             {/* Column Header */}
             <div style={{ padding: 'var(--space-md)', borderBottom: '1px solid #e2e8f0', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-sm)' }}>
                     <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: stage.color }}></div>
                     <span style={{ fontWeight: '600', color: 'var(--color-text-main)' }}>{stage.label}</span>
+                    <span style={{
+                        fontSize: '0.75rem',
+                        backgroundColor: '#e2e8f0',
+                        padding: '2px 6px',
+                        borderRadius: '10px',
+                        color: 'var(--color-text-muted)',
+                        fontWeight: '600'
+                    }}>
+                        {React.Children.count(children)}
+                    </span>
                 </div>
                 <button style={{ background: 'none', border: 'none', color: 'var(--color-text-muted)', cursor: 'pointer' }}>
                     <MoreHorizontal size={16} />
@@ -127,12 +144,16 @@ const KanbanBoard: React.FC = () => {
 
     return (
         <DndContext onDragEnd={handleDragEnd}>
-            <div style={{ display: 'flex', flexDirection: 'column', height: '100%', gap: 'var(--space-md)' }}>
+            <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                style={{ display: 'flex', flexDirection: 'column', height: '100%', gap: 'var(--space-md)' }}
+            >
                 {/* Toolbar */}
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <h1 style={{ fontSize: '1.5rem', fontWeight: '600' }}>Pipeline</h1>
+                    <h1 style={{ fontSize: '1.5rem', fontWeight: '600', letterSpacing: '-0.5px' }}>Pipeline</h1>
                     <button style={{
-                        backgroundColor: 'var(--color-primary)',
+                        background: 'var(--gradient-primary)',
                         color: 'white',
                         border: 'none',
                         padding: 'var(--space-sm) var(--space-md)',
@@ -140,7 +161,9 @@ const KanbanBoard: React.FC = () => {
                         display: 'flex',
                         alignItems: 'center',
                         gap: 'var(--space-sm)',
-                        fontWeight: '500'
+                        fontWeight: '500',
+                        boxShadow: 'var(--shadow-md)',
+                        cursor: 'pointer'
                     }}
                         onClick={() => navigate('/crm/new')}
                     >
@@ -159,7 +182,7 @@ const KanbanBoard: React.FC = () => {
                         </DroppableColumn>
                     ))}
                 </div>
-            </div>
+            </motion.div>
         </DndContext>
     );
 };
