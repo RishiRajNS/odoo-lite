@@ -1,23 +1,15 @@
 import React from 'react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
-import { TrendingUp, Users, DollarSign, ShoppingCart } from 'lucide-react';
+import { TrendingUp, Users, DollarSign, ShoppingCart, ArrowUp, ArrowDown } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const data = [
-    { name: 'Jan', revenue: 4000, leads: 24 },
-    { name: 'Feb', revenue: 3000, leads: 13 },
-    { name: 'Mar', revenue: 2000, leads: 98 },
-    { name: 'Apr', revenue: 2780, leads: 39 },
-    { name: 'May', revenue: 1890, leads: 48 },
-    { name: 'Jun', revenue: 2390, leads: 38 },
-    { name: 'Jul', revenue: 3490, leads: 43 },
-];
-
-const sourceData = [
-    { name: 'Website', value: 400 },
-    { name: 'Referral', value: 300 },
-    { name: 'Social', value: 300 },
-    { name: 'Ads', value: 200 },
+    { name: 'Jan', revenue: 4000 },
+    { name: 'Feb', revenue: 3000 },
+    { name: 'Mar', revenue: 5000 },
+    { name: 'Apr', revenue: 2780 },
+    { name: 'May', revenue: 4890 },
+    { name: 'Jun', revenue: 6390 },
 ];
 
 const container = {
@@ -25,7 +17,7 @@ const container = {
     show: {
         opacity: 1,
         transition: {
-            staggerChildren: 0.1
+            staggerChildren: 0.05
         }
     }
 };
@@ -35,44 +27,62 @@ const item = {
     show: { opacity: 1, y: 0 }
 };
 
-const StatCard = ({ title, value, trend, icon: Icon, color }: any) => (
+const StatCard = ({ title, value, change, icon: Icon, trend }: any) => (
     <motion.div variants={item} style={{
-        backgroundColor: 'white',
-        padding: 'var(--space-lg)',
-        borderRadius: 'var(--radius-lg)',
+        backgroundColor: 'var(--color-bg-surface)',
+        padding: 'var(--space-xl)',
+        borderRadius: 'var(--radius-xl)',
         boxShadow: 'var(--shadow-sm)',
+        border: '1px solid var(--color-border)',
         display: 'flex',
         flexDirection: 'column',
-        gap: 'var(--space-sm)',
-        border: '1px solid var(--color-border)'
+        gap: 'var(--space-md)'
     }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start' }}>
             <div style={{
-                padding: 'var(--space-sm)',
-                borderRadius: 'var(--radius-md)',
-                backgroundColor: `${color}15`,
-                color: color
+                width: '48px',
+                height: '48px',
+                borderRadius: 'var(--radius-lg)',
+                background: 'var(--color-bg-light)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: 'var(--color-primary)'
             }}>
                 <Icon size={24} />
             </div>
-            <span style={{
-                fontSize: '0.85rem',
-                color: trend > 0 ? '#10b981' : '#ef4444',
-                fontWeight: '600',
+            <div style={{
                 display: 'flex',
                 alignItems: 'center',
-                gap: '4px',
-                backgroundColor: trend > 0 ? '#10b98110' : '#ef444410',
-                padding: '2px 6px',
-                borderRadius: '4px'
+                gap: 'var(--space-xs)',
+                fontSize: 'var(--text-sm)',
+                fontWeight: 'var(--font-weight-semibold)',
+                color: trend === 'up' ? 'var(--color-success)' : 'var(--color-danger)',
+                background: trend === 'up' ? '#10B98110' : '#EF444410',
+                padding: '4px 8px',
+                borderRadius: 'var(--radius-md)'
             }}>
-                {trend > 0 ? '+' : ''}{trend}%
-                <TrendingUp size={14} />
-            </span>
+                {trend === 'up' ? <ArrowUp size={14} /> : <ArrowDown size={14} />}
+                {change}%
+            </div>
         </div>
         <div>
-            <div style={{ fontSize: '0.9rem', color: 'var(--color-text-muted)', marginBottom: '4px' }}>{title}</div>
-            <div style={{ fontSize: '1.75rem', fontWeight: '700', color: 'var(--color-text-main)', letterSpacing: '-0.5px' }}>{value}</div>
+            <div style={{
+                fontSize: 'var(--text-sm)',
+                color: 'var(--color-text-muted)',
+                marginBottom: 'var(--space-xs)',
+                fontWeight: 'var(--font-weight-medium)'
+            }}>
+                {title}
+            </div>
+            <div style={{
+                fontSize: 'var(--text-3xl)',
+                fontWeight: 'var(--font-weight-bold)',
+                color: 'var(--color-text-main)',
+                letterSpacing: '-0.02em'
+            }}>
+                {value}
+            </div>
         </div>
     </motion.div>
 );
@@ -83,64 +93,167 @@ const Dashboard: React.FC = () => {
             variants={container}
             initial="hidden"
             animate="show"
-            style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-xl)' }}
+            style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-2xl)', height: '100%' }}
         >
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <h1 style={{ fontSize: '1.75rem', fontWeight: '700', letterSpacing: '-0.5px' }}>Dashboard</h1>
-                <span style={{ color: 'var(--color-text-muted)', fontSize: '0.95rem' }}>Overview for last 30 days</span>
+            {/* Header */}
+            <div>
+                <h1 style={{
+                    fontSize: 'var(--text-3xl)',
+                    fontWeight: 'var(--font-weight-bold)',
+                    color: 'var(--color-text-main)',
+                    marginBottom: 'var(--space-xs)'
+                }}>
+                    Dashboard
+                </h1>
+                <p style={{
+                    fontSize: 'var(--text-sm)',
+                    color: 'var(--color-text-muted)'
+                }}>
+                    Welcome back! Here's what's happening with your business today.
+                </p>
             </div>
 
             {/* Stats Grid */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 'var(--space-lg)' }}>
-                <StatCard title="Total Revenue" value="$54,230" trend={12} icon={DollarSign} color="#6366f1" />
-                <StatCard title="Active Leads" value="1,234" trend={8} icon={Users} color="#ec4899" />
-                <StatCard title="New Orders" value="456" trend={-3} icon={ShoppingCart} color="#f59e0b" />
-                <StatCard title="Conversion Rate" value="2.4%" trend={5} icon={TrendingUp} color="#10b981" />
+            <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+                gap: 'var(--space-lg)'
+            }}>
+                <StatCard title="Total Revenue" value="$54,230" change={12.5} trend="up" icon={DollarSign} />
+                <StatCard title="Active Customers" value="1,234" change={8.2} trend="up" icon={Users} />
+                <StatCard title="New Orders" value="456" change={3.1} trend="down" icon={ShoppingCart} />
+                <StatCard title="Growth Rate" value="23.5%" change={5.4} trend="up" icon={TrendingUp} />
             </div>
 
             {/* Charts Section */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: 'var(--space-lg)' }}>
-
+            <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))',
+                gap: 'var(--space-lg)',
+                flex: 1
+            }}>
                 {/* Revenue Chart */}
-                <motion.div variants={item} style={{ backgroundColor: 'white', padding: 'var(--space-xl)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', minHeight: '400px', border: '1px solid var(--color-border)' }}>
-                    <h3 style={{ margin: '0 0 var(--space-lg) 0', fontSize: '1.1rem', fontWeight: '600' }}>Revenue Trend</h3>
-                    <div style={{ height: '300px', width: '100%' }}>
+                <motion.div variants={item} style={{
+                    backgroundColor: 'var(--color-bg-surface)',
+                    padding: 'var(--space-xl)',
+                    borderRadius: 'var(--radius-xl)',
+                    boxShadow: 'var(--shadow-sm)',
+                    border: '1px solid var(--color-border)',
+                    display: 'flex',
+                    flexDirection: 'column'
+                }}>
+                    <h3 style={{
+                        margin: '0 0 var(--space-lg) 0',
+                        fontSize: 'var(--text-lg)',
+                        fontWeight: 'var(--font-weight-semibold)',
+                        color: 'var(--color-text-main)'
+                    }}>
+                        Revenue Overview
+                    </h3>
+                    <div style={{ height: '280px', width: '100%' }}>
                         <ResponsiveContainer width="100%" height="100%">
                             <AreaChart data={data}>
                                 <defs>
                                     <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="5%" stopColor="#6366f1" stopOpacity={0.3} />
-                                        <stop offset="95%" stopColor="#6366f1" stopOpacity={0} />
+                                        <stop offset="5%" stopColor="#7C3AED" stopOpacity={0.3} />
+                                        <stop offset="95%" stopColor="#7C3AED" stopOpacity={0} />
                                     </linearGradient>
                                 </defs>
-                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#94a3b8', fontSize: 12 }} dy={10} />
-                                <YAxis axisLine={false} tickLine={false} tick={{ fill: '#94a3b8', fontSize: 12 }} />
-                                <Tooltip
-                                    contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }}
+                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#F3F4F6" />
+                                <XAxis
+                                    dataKey="name"
+                                    axisLine={false}
+                                    tickLine={false}
+                                    tick={{ fill: '#9CA3AF', fontSize: 12 }}
+                                    dy={10}
                                 />
-                                <Area type="monotone" dataKey="revenue" stroke="#6366f1" strokeWidth={3} fillOpacity={1} fill="url(#colorRevenue)" />
+                                <YAxis
+                                    axisLine={false}
+                                    tickLine={false}
+                                    tick={{ fill: '#9CA3AF', fontSize: 12 }}
+                                />
+                                <Tooltip
+                                    contentStyle={{
+                                        borderRadius: '12px',
+                                        border: 'none',
+                                        boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)',
+                                        padding: '12px'
+                                    }}
+                                />
+                                <Area
+                                    type="monotone"
+                                    dataKey="revenue"
+                                    stroke="#7C3AED"
+                                    strokeWidth={3}
+                                    fillOpacity={1}
+                                    fill="url(#colorRevenue)"
+                                />
                             </AreaChart>
                         </ResponsiveContainer>
                     </div>
                 </motion.div>
 
-                {/* Lead Sources */}
-                <motion.div variants={item} style={{ backgroundColor: 'white', padding: 'var(--space-xl)', borderRadius: 'var(--radius-lg)', boxShadow: 'var(--shadow-sm)', border: '1px solid var(--color-border)' }}>
-                    <h3 style={{ margin: '0 0 var(--space-lg) 0', fontSize: '1.1rem', fontWeight: '600' }}>Lead Sources</h3>
-                    <div style={{ height: '300px', width: '100%' }}>
-                        <ResponsiveContainer width="100%" height="100%">
-                            <BarChart data={sourceData} layout="vertical">
-                                <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#f1f5f9" />
-                                <XAxis type="number" hide />
-                                <YAxis dataKey="name" type="category" width={80} axisLine={false} tickLine={false} tick={{ fill: '#94a3b8', fontSize: 12 }} />
-                                <Tooltip cursor={{ fill: 'transparent' }} contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }} />
-                                <Bar dataKey="value" fill="#ec4899" radius={[0, 4, 4, 0]} barSize={32} />
-                            </BarChart>
-                        </ResponsiveContainer>
+                {/* Recent Activity */}
+                <motion.div variants={item} style={{
+                    backgroundColor: 'var(--color-bg-surface)',
+                    padding: 'var(--space-xl)',
+                    borderRadius: 'var(--radius-xl)',
+                    boxShadow: 'var(--shadow-sm)',
+                    border: '1px solid var(--color-border)',
+                    display: 'flex',
+                    flexDirection: 'column'
+                }}>
+                    <h3 style={{
+                        margin: '0 0 var(--space-lg) 0',
+                        fontSize: 'var(--text-lg)',
+                        fontWeight: 'var(--font-weight-semibold)',
+                        color: 'var(--color-text-main)'
+                    }}>
+                        Recent Activity
+                    </h3>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-md)' }}>
+                        {[
+                            { name: 'New order from Alice', time: '2 min ago', color: '#7C3AED' },
+                            { name: 'Payment received', time: '1 hour ago', color: '#10B981' },
+                            { name: 'New customer registered', time: '3 hours ago', color: '#F59E0B' },
+                            { name: 'Product updated', time: '5 hours ago', color: '#6B7280' }
+                        ].map((activity, i) => (
+                            <div key={i} style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: 'var(--space-md)',
+                                padding: 'var(--space-md)',
+                                borderRadius: 'var(--radius-lg)',
+                                background: 'var(--color-bg-hover)',
+                                transition: 'all var(--transition-base)'
+                            }}>
+                                <div style={{
+                                    width: '8px',
+                                    height: '8px',
+                                    borderRadius: 'var(--radius-full)',
+                                    background: activity.color,
+                                    flexShrink: 0
+                                }} />
+                                <div style={{ flex: 1 }}>
+                                    <div style={{
+                                        fontSize: 'var(--text-sm)',
+                                        fontWeight: 'var(--font-weight-medium)',
+                                        color: 'var(--color-text-main)'
+                                    }}>
+                                        {activity.name}
+                                    </div>
+                                    <div style={{
+                                        fontSize: 'var(--text-xs)',
+                                        color: 'var(--color-text-muted)',
+                                        marginTop: '2px'
+                                    }}>
+                                        {activity.time}
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
                     </div>
                 </motion.div>
-
             </div>
         </motion.div>
     );

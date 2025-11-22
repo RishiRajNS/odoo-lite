@@ -1,6 +1,6 @@
 import React from 'react';
 import { Outlet, NavLink, useLocation } from 'react-router-dom';
-import { LayoutGrid, Users, Package, Settings, Menu } from 'lucide-react';
+import { LayoutGrid, Users, Package, Settings, Menu, Bell, Search } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import '../../styles/theme.css';
 
@@ -11,67 +11,117 @@ const Shell: React.FC = () => {
         <div style={{ display: 'flex', height: '100vh', backgroundColor: 'var(--color-bg-app)' }}>
             {/* Sidebar */}
             <aside style={{
-                width: '260px',
-                background: 'rgba(15, 23, 42, 0.9)', // Darker slate
-                backdropFilter: 'blur(20px)',
-                borderRight: '1px solid rgba(255,255,255,0.05)',
-                color: 'var(--color-text-inverse)',
+                width: '72px',
+                background: 'var(--color-bg-sidebar)',
                 display: 'flex',
                 flexDirection: 'column',
-                padding: 'var(--space-md)',
-                zIndex: 10,
-                boxShadow: 'var(--shadow-lg)'
+                alignItems: 'center',
+                padding: 'var(--space-lg) 0',
+                gap: 'var(--space-md)',
+                boxShadow: 'var(--shadow-lg)',
+                zIndex: 10
             }}>
-                <div style={{ marginBottom: 'var(--space-xl)', display: 'flex', alignItems: 'center', gap: 'var(--space-sm)', padding: '0 var(--space-sm)' }}>
-                    <div style={{
-                        width: '36px',
-                        height: '36px',
-                        background: 'var(--gradient-primary)',
-                        borderRadius: 'var(--radius-md)',
-                        boxShadow: 'var(--shadow-glow)'
-                    }}></div>
-                    <span style={{ fontWeight: '700', fontSize: '1.25rem', letterSpacing: '-0.5px' }}>OdooLite</span>
+                {/* Logo */}
+                <div style={{
+                    width: '40px',
+                    height: '40px',
+                    background: 'rgba(255, 255, 255, 0.2)',
+                    borderRadius: 'var(--radius-lg)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginBottom: 'var(--space-xl)',
+                    fontWeight: 'var(--font-weight-bold)',
+                    color: 'white',
+                    fontSize: 'var(--text-lg)'
+                }}>
+                    O
                 </div>
 
-                <nav style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-xs)' }}>
+                {/* Navigation */}
+                <nav style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-sm)', width: '100%', alignItems: 'center' }}>
                     <NavItem to="/" icon={<LayoutGrid size={20} />} label="Dashboard" />
                     <NavItem to="/crm" icon={<Users size={20} />} label="CRM" />
                     <NavItem to="/inventory" icon={<Package size={20} />} label="Inventory" />
                 </nav>
 
-                <div style={{ marginTop: 'auto' }}>
+                {/* Bottom Items */}
+                <div style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: 'var(--space-sm)', alignItems: 'center' }}>
                     <NavItem to="/settings" icon={<Settings size={20} />} label="Settings" />
                 </div>
             </aside>
 
             {/* Main Content */}
-            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', position: 'relative' }}>
+            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
                 {/* Topbar */}
                 <header style={{
-                    height: '64px',
-                    background: 'rgba(255, 255, 255, 0.8)',
-                    backdropFilter: 'blur(16px)',
+                    height: '72px',
+                    background: 'var(--color-bg-surface)',
                     borderBottom: '1px solid var(--color-border)',
                     display: 'flex',
                     alignItems: 'center',
-                    padding: '0 var(--space-xl)',
+                    padding: '0 var(--space-2xl)',
                     justifyContent: 'space-between',
                     position: 'sticky',
                     top: 0,
                     zIndex: 5
                 }}>
-                    <button style={{ background: 'none', border: 'none', color: 'var(--color-text-muted)', transition: 'color 0.2s' }}>
-                        <Menu size={24} />
-                    </button>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-md)' }}>
+                    {/* Search */}
+                    <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 'var(--space-md)',
+                        background: 'var(--color-bg-hover)',
+                        padding: 'var(--space-sm) var(--space-md)',
+                        borderRadius: 'var(--radius-lg)',
+                        width: '320px'
+                    }}>
+                        <Search size={18} color="var(--color-text-muted)" />
+                        <input
+                            type="text"
+                            placeholder="Search..."
+                            style={{
+                                border: 'none',
+                                background: 'transparent',
+                                outline: 'none',
+                                width: '100%',
+                                color: 'var(--color-text-main)',
+                                fontSize: 'var(--text-sm)'
+                            }}
+                        />
+                    </div>
+
+                    {/* Right Side */}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-lg)' }}>
+                        <button style={{
+                            background: 'var(--color-bg-hover)',
+                            border: 'none',
+                            color: 'var(--color-text-muted)',
+                            width: '40px',
+                            height: '40px',
+                            borderRadius: 'var(--radius-lg)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            cursor: 'pointer',
+                            transition: 'all var(--transition-base)'
+                        }}>
+                            <Bell size={20} />
+                        </button>
                         <div style={{
-                            width: '36px',
-                            height: '36px',
-                            borderRadius: '50%',
-                            background: 'var(--gradient-surface)',
-                            border: '1px solid white',
-                            boxShadow: 'var(--shadow-sm)'
-                        }}></div>
+                            width: '40px',
+                            height: '40px',
+                            borderRadius: 'var(--radius-full)',
+                            background: 'linear-gradient(135deg, #7C3AED 0%, #A78BFA 100%)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            color: 'white',
+                            fontWeight: 'var(--font-weight-semibold)',
+                            fontSize: 'var(--text-sm)'
+                        }}>
+                            U
+                        </div>
                     </div>
                 </header>
 
@@ -84,7 +134,7 @@ const Shell: React.FC = () => {
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: -10 }}
                             transition={{ duration: 0.2 }}
-                            style={{ height: '100%', overflow: 'auto', padding: 'var(--space-xl)' }}
+                            style={{ height: '100%', overflow: 'auto', padding: 'var(--space-2xl)' }}
                         >
                             <Outlet />
                         </motion.div>
@@ -102,18 +152,18 @@ const NavItem: React.FC<{ to: string; icon: React.ReactNode; label: string }> = 
             style={({ isActive }) => ({
                 display: 'flex',
                 alignItems: 'center',
-                gap: 'var(--space-md)',
-                padding: 'var(--space-sm) var(--space-md)',
-                borderRadius: 'var(--radius-md)',
-                color: isActive ? 'white' : 'var(--color-text-muted)',
-                background: isActive ? 'rgba(255, 255, 255, 0.1)' : 'transparent',
-                borderLeft: isActive ? '3px solid var(--color-primary)' : '3px solid transparent',
-                transition: 'all 0.2s ease',
-                fontWeight: isActive ? 500 : 400
+                justifyContent: 'center',
+                width: '48px',
+                height: '48px',
+                borderRadius: 'var(--radius-lg)',
+                color: 'white',
+                background: isActive ? 'rgba(255, 255, 255, 0.2)' : 'transparent',
+                transition: 'all var(--transition-base)',
+                position: 'relative'
             })}
+            title={label}
         >
             {icon}
-            <span style={{ fontSize: '0.95rem' }}>{label}</span>
         </NavLink>
     );
 };
